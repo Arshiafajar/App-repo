@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girls Hub Chat</title>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Welcome to Girls Hub Chat!</h1>
+
+    <div id="chat-container">
+        <div id="messages">
+            <!-- Messages will be displayed here -->
+        </div>
+        <input type="text" id="message" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // Initialize SocketIO client
+        var socket = io.connect('http://127.0.0.1:5000');
+
+        // Listen for incoming messages
+        socket.on('receive_message', function(data) {
+            let messageElement = document.createElement('p');
+            messageElement.textContent = data.message;
+            document.getElementById('messages').appendChild(messageElement);
+        });
+
+        // Function to send message to the server
+        function sendMessage() {
+            let message = document.getElementById('message').value;
+            socket.emit('send_message', { 'message': message });
+            document.getElementById('message').value = ''; // Clear the input field
+        }
+    </script>
+</body>
+</html>
